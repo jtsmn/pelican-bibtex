@@ -19,6 +19,28 @@ from pelican import signals
 __version__ = '0.2'
 
 
+def entrytype(label):
+    entries = {
+        'book'          : (0, 'Book'),
+        'incollection'  : (1, 'Book in a Collection'),
+        'booklet'       : (2, 'Booklet'),
+        'proceedings'   : (3, 'Proceedings'),
+        'inbook'        : (4, 'Chapter in a Book'),
+        'article'       : (5, 'Journal'),
+        'inproceedings' : (6, 'Conference'),
+        'phdthesis'     : (7, 'PhD Thesis'),
+        'masterthesis'  : (8, 'Master Thesis'),
+        'techreport'    : (9, 'Technical Report'),
+        'manual'        : (10, 'Manual'),
+        'misc'          : (11, 'Miscellaneous'),
+        'unpublished'   : (12, 'Unpublished'),
+    }
+
+    if label in entries:
+        return entries[label]
+    else:
+        return label
+
 def add_publications(generator):
     """
     Populates context with a list of BibTeX publications.
@@ -69,6 +91,7 @@ def add_publications(generator):
     for formatted_entry in formatted_entries:
         key = formatted_entry.key
         entry = bibdata_all.entries[key]
+        type = entry.type
         year = entry.fields.get('year')
         pdf = entry.fields.pop('pdf', None)
         slides = entry.fields.pop('slides', None)
@@ -79,14 +102,25 @@ def add_publications(generator):
         bibdata_this = BibliographyData(entries={key: entry})
         Writer().write_stream(bibdata_this, bib_buf)
         text = formatted_entry.text.render(html_backend)
+        doi = entry.fields.get('doi') if 'doi' in entry.fields.keys() else ""
+        url = entry.fields.get('url') if 'url' in entry.fields.keys() else ""
 
-        publications.append((key,
-                             year,
-                             text,
-                             bib_buf.getvalue(),
-                             pdf,
-                             slides,
-                             poster))
+        # Prettify BibTeX entries
+        text = text.replace("\{", "")
+        text = text.replace("{", "")
+        text = text.replace("\}", "")
+        text = text.replace("}", "")
+
+        publications.append({'entry'  : entrytype(type),
+                             'key'    : key,
+                             'year'   : year,
+                             'text'   : text,
+                             'doi'    : doi,
+                             'url'    : url,
+                             'bibtex' : bib_buf.getvalue(),
+                             'pdf'    : pdf,
+                             'slides' : slides,
+                             'poster' : poster})
 
     generator.context['publications'] = publications
 
