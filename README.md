@@ -3,7 +3,9 @@ Pelican BibTeX
 
 Organize your scientific publications with BibTeX in Pelican
 
-Author          | Vlad Niculae
+Author of this fork: Emmanuel Fleury (perror)
+
+Original Author: Vlad Niculae
 ----------------|-----
 Author Email    | vlad@vene.ro
 Author Homepage | http://vene.ro
@@ -11,6 +13,12 @@ Github Account  | https://github.com/vene
 
 *Note*: This code is unlicensed. It was not submitted to the `pelican-plugins`
 official repository because of the license constraint imposed there.
+
+History
+=======
+
+- Aug 3, 2013 (Vlad Niculae): Initial release of the pelican plugin.
+- Jul 20, 2014 (Emmanuel Fleury): Added a few features. 
 
 
 Requirements
@@ -63,39 +71,32 @@ fields are stripped from the generated BibTeX (found in the `bibtex` field).
 Template Example
 ================
 
-You probably want to define a 'publications.html' direct template.  Don't forget
-to add it to the `DIRECT\_TEMPLATES` configuration key.  Note that we are escaping
-the BibTeX string twice in order to properly display it.  This can be achieved
-using `forceescape`.
+You probably want to define a 'publications.html' direct template.
+Don't forget to add it to the `DIRECT\_TEMPLATES` configuration key.
+Note that we are escaping the BibTeX string twice in order to properly
+display it.
 
 ```python
 {% extends "base.html" %}
 {% block title %}Publications{% endblock %}
 {% block content %}
 
-<script type="text/javascript">
-    function disp(s) {
-        var win;
-        var doc;
-        win = window.open("", "WINDOWID");
-        doc = win.document;
-        doc.open("text/plain");
-        doc.write("<pre>" + s + "</pre>");
-        doc.close();
-    }
-</script>
 <section id="content" class="body">
-    <h1 class="entry-title">Publications</h1>
+  <div class="container">
+    {% for group in publications|groupby('entry') %}
+    <h2>{{ group.grouper[1] }}</h2>
     <ul>
-    {% for key, year, text, bibtex, pdf, slides, poster in publications %}
-    <li id="{{ key }}">{{ text }}
-    [&nbsp;<a href="javascript:disp('{{ bibtex|replace('\n', '\\n')|escape|forceescape }}');">Bibtex</a>&nbsp;]
-    {% for label, target in [('PDF', pdf), ('Slides', slides), ('Poster', poster)] %}
-    {{ "[&nbsp;<a href=\"%s\">%s</a>&nbsp;]" % (target, label) if target }}
-    {% endfor %}
-    </li>
-    {% endfor %}
+      {% for publication in group.list|sort(attribute='year')|reverse %}
+      <li id="{{ publication.key }}">{{ publication.text }}
+        [<a href="javascript:disp('{{ publication.bibtex|replace('\n', '\\n')|escape }}');">Bibtex</a>]
+        {% for label, target in [('PDF', publication.pdf), ('Slides', publication.slides), ('Poster', publication.poster)] %}
+        {{ "[<a href=\"publications/%s\">%s</a>]" % (target, label) if target }}
+        {% endfor %}
+      </li>
+      {% endfor %}
     </ul>
+    {% endfor %}
+  </div>
 </section>
 {% endblock %}
 ```
