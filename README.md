@@ -6,10 +6,6 @@ Organize your scientific publications with BibTeX in Pelican
 Author of this fork: Emmanuel Fleury (perror)
 
 Original Author: Vlad Niculae
-----------------|-----
-Author Email    | vlad@vene.ro
-Author Homepage | http://vene.ro
-Github Account  | https://github.com/vene
 
 *Note*: This code is unlicensed. It was not submitted to the `pelican-plugins`
 official repository because of the license constraint imposed there.
