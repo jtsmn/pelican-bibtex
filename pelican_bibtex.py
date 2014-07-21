@@ -8,15 +8,23 @@ citations, loaded from a BibTeX file at a configurable path.
 The use case for now is to generate a ``Publications'' page for academic
 websites.
 """
-# Author: Vlad Niculae <vlad@vene.ro>
+
+# Fork author: Emmanuel Fleury <emmanuel.fleury@gmail.com>
+# Initial author: Vlad Niculae <vlad@vene.ro>
 # Unlicense (see UNLICENSE for details)
 
 import logging
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 from pelican import signals
 
 __version__ = '0.3'
+
+def get_field(entry, field):
+    """
+    Get a field in an entry.
+    """
+    return entry.fields.get(field) if field in entry.fields.keys() else ""
 
 
 def entrytype(label):
@@ -44,6 +52,7 @@ def entrytype(label):
         return entries[label]
     else:
         return (100, label)
+
 
 def add_publications(generator):
     """
@@ -73,61 +82,48 @@ def add_publications(generator):
         from pybtex.backends import html
         from pybtex.style.formatting import plain
     except ImportError:
-        logger.warn('`pelican_bibtex` failed to load dependency `pybtex`')
+        LOGGER.warn('`pelican_bibtex` failed to load dependency `pybtex`')
         return
 
-    refs_file = generator.settings['PUBLICATIONS_SRC']
     try:
-        bibdata_all = Parser().parse_file(refs_file)
-    except PybtexError as e:
-        logger.warn('`pelican_bibtex` failed to parse file %s: %s' % (
-            refs_file,
-            str(e)))
+        bib_items = Parser().parse_file(generator.settings['PUBLICATIONS_SRC'])
+    except PybtexError as err:
+        LOGGER.warn('`pelican_bibtex` failed to parse file %s: %s',
+                    generator.settings['PUBLICATIONS_SRC'],
+                    str(err))
         return
 
     publications = []
 
-    # format entries
-    plain_style = plain.Style()
-    html_backend = html.Backend()
-    formatted_entries = plain_style.format_entries(bibdata_all.entries.values())
-
-    for formatted_entry in formatted_entries:
-        key = formatted_entry.key
-        entry = bibdata_all.entries[key]
-        type = entry.type
-        year = entry.fields.get('year')
-        pdf = entry.fields.pop('pdf', None)
-        slides = entry.fields.pop('slides', None)
-        poster = entry.fields.pop('poster', None)
+    for fmt_entry in plain.Style().format_entries(bib_items.entries.values()):
+        key = fmt_entry.key
+        entry = bib_items.entries[key]
 
         #render the bibtex string for the entry
-        bib_buf = StringIO()
-        bibdata_this = BibliographyData(entries={key: entry})
-        Writer().write_stream(bibdata_this, bib_buf)
-        text = formatted_entry.text.render(html_backend)
-        doi = entry.fields.get('doi') if 'doi' in entry.fields.keys() else ""
-        url = entry.fields.get('url') if 'url' in entry.fields.keys() else ""
+        Writer().write_stream(BibliographyData(entries={key: entry}),
+                              StringIO())
 
         # Prettify BibTeX entries
-        text = text.replace("\{", "")
-        text = text.replace("{", "")
-        text = text.replace("\}", "")
-        text = text.replace("}", "")
+        text = fmt_entry.text.render(html.Backend())
+        text = text.replace(r"\{", "").replace(r"\}", "")
+        text = text.replace("{", "").replace("}", "")
 
-        publications.append({'entry'  : entrytype(type),
+        publications.append({'bibtex' : StringIO().getvalue(),
+                             'doi'    : get_field(entry, 'doi'),
+                             'entry'  : entrytype(entry.type),
                              'key'    : key,
-                             'year'   : year,
+                             'pdf'    : get_field(entry, 'pdf'),
+                             'poster' : get_field(entry, 'poster'),
+                             'slides' : get_field(entry, 'slides'),
                              'text'   : text,
-                             'doi'    : doi,
-                             'url'    : url,
-                             'bibtex' : bib_buf.getvalue(),
-                             'pdf'    : pdf,
-                             'slides' : slides,
-                             'poster' : poster})
+                             'url'    : get_field(entry, 'url'),
+                             'year'   : entry.fields.get('year'),})
 
     generator.context['publications'] = publications
 
 
 def register():
+    """
+    Register the signal to the Pelican framework.
+    """
     signals.generator_init.connect(add_publications)

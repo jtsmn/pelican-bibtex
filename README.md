@@ -41,7 +41,7 @@ If the file is present and readable, you will be able to find the `publications`
 variable in all templates.  It is a list of dictionary  with the following keys:
 
 ```
-(key, year, text, bibtex, pdf, slides, poster)
+{bibtex, doi, entry, key, pdf, poster, slides, text, url, year}
 ```
 - `entry` is the type of BibTeX entry is comes out as a couple with `(rank, label)`.
 - `key` is the BibTeX key (identifier) of the entry.
@@ -85,7 +85,6 @@ display it.
     <ul>
       {% for publication in group.list|sort(attribute='year')|reverse %}
       <li id="{{ publication.key }}">{{ publication.text }}
-        [<a href="javascript:disp('{{ publication.bibtex|replace('\n', '\\n')|escape }}');">Bibtex</a>]
         {% for label, target in [('PDF', publication.pdf), ('Slides', publication.slides), ('Poster', publication.poster)] %}
         {{ "[<a href=\"publications/%s\">%s</a>]" % (target, label) if target }}
         {% endfor %}
