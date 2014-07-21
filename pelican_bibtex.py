@@ -99,16 +99,16 @@ def add_publications(generator):
         key = fmt_entry.key
         entry = bib_items.entries[key]
 
-        #render the bibtex string for the entry
-        Writer().write_stream(BibliographyData(entries={key: entry}),
-                              StringIO())
-
+        # Render the bibtex string for the entry
+        buf = StringIO()
+        Writer().write_stream(BibliographyData(entries={key: entry}), buf)
+        
         # Prettify BibTeX entries
         text = fmt_entry.text.render(html.Backend())
         text = text.replace(r"\{", "").replace(r"\}", "")
         text = text.replace("{", "").replace("}", "")
 
-        publications.append({'bibtex' : StringIO().getvalue(),
+        publications.append({'bibtex' : buf.getvalue(),
                              'doi'    : get_field(entry, 'doi'),
                              'entry'  : entrytype(entry.type),
                              'key'    : key,
