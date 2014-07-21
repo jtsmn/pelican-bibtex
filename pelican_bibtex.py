@@ -16,10 +16,14 @@ logger = logging.getLogger(__name__)
 
 from pelican import signals
 
-__version__ = '0.2'
+__version__ = '0.3'
 
 
 def entrytype(label):
+    """
+    Define a ranking among the different types of publication and a
+    collection of labels to be displayed for each entrytype.
+    """
     entries = {
         'book'          : (0, 'Book'),
         'incollection'  : (1, 'Book in a Collection'),
@@ -39,7 +43,7 @@ def entrytype(label):
     if label in entries:
         return entries[label]
     else:
-        return label
+        return (100, label)
 
 def add_publications(generator):
     """
