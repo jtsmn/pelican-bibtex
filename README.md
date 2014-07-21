@@ -4,8 +4,7 @@ Pelican BibTeX
 Organize your scientific publications with BibTeX in Pelican
 
 Author of this fork: Emmanuel Fleury (perror)
-
-Original Author: Vlad Niculae
+Original Author: Vlad Niculae (vene, https://github.com/vene/pelican-bibtex/)
 
 *Note*: This code is unlicensed. It was not submitted to the `pelican-plugins`
 official repository because of the license constraint imposed there.
@@ -14,7 +13,7 @@ History
 =======
 
 - Aug 3, 2013 (Vlad Niculae): Initial release of the pelican plugin.
-- Jul 20, 2014 (Emmanuel Fleury): Added a few features. 
+- Jul 21, 2014 (Emmanuel Fleury): Added a few features and releasing version 0.3. 
 
 
 Requirements
