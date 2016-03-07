@@ -38,14 +38,15 @@ def entrytype(label):
         'booklet'       : (2, 'Booklet'),
         'proceedings'   : (3, 'Proceedings'),
         'inbook'        : (4, 'Chapter in a Book'),
-        'article'       : (5, 'Journal'),
-        'inproceedings' : (6, 'Conference'),
-        'phdthesis'     : (7, 'PhD Thesis'),
-        'mastersthesis' : (8, 'Master Thesis'),
-        'techreport'    : (9, 'Technical Report'),
-        'manual'        : (10, 'Manual'),
-        'misc'          : (11, 'Miscellaneous'),
-        'unpublished'   : (12, 'Unpublished'),
+        'article'       : (5, 'Journal Articles'),
+        'inproceedings' : (6, 'Papers'),
+        'conference'    : (7, 'Papers'),
+        'phdthesis'     : (8, 'PhD Thesis'),
+        'mastersthesis' : (9, 'Master Thesis'),
+        'techreport'    : (10, 'Technical Report'),
+        'manual'        : (11, 'Manual'),
+        'misc'          : (12, 'Other Publications'),
+        'unpublished'   : (13, 'Unpublished'),
     }
 
     if label in entries:
@@ -118,7 +119,8 @@ def add_publications(generator):
                              'text'   : text,
                              'url'    : get_field(entry, 'url'),
                              'note'    : get_field(entry, 'note'),
-                             'year'   : entry.fields.get('year'),})
+                             'year'   : entry.fields.get('year'),}),
+                             'authorizer': get_field(entry, 'authorizer')
 
     generator.context['publications'] = publications
 
