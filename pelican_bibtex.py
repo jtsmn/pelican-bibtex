@@ -119,8 +119,9 @@ def add_publications(generator):
                              'text'   : text,
                              'url'    : get_field(entry, 'url'),
                              'note'    : get_field(entry, 'note'),
-                             'year'   : entry.fields.get('year'),}),
-                             'authorizer': get_field(entry, 'authorizer')
+                             'year'   : entry.fields.get('year'),
+                             'authorizer': get_field(entry, 'authorizer'),
+                             })
 
     generator.context['publications'] = publications
 
