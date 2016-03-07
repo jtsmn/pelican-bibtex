@@ -46,7 +46,7 @@ def entrytype(label):
         'techreport'    : (10, 'Technical Report'),
         'manual'        : (11, 'Manual'),
         'misc'          : (12, 'Other Publications'),
-        'unpublished'   : (13, 'Unpublished'),
+        'unpublished'   : (13, 'Posters and Extended Abstracts'),
     }
 
     if label in entries:
