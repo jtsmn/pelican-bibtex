@@ -3,7 +3,8 @@ Pelican BibTeX
 
 Organize your scientific publications with BibTeX in Pelican
 
-Author of this fork: Emmanuel Fleury (perror)
+Author of this fork: Jacob Thebault-Spieker
+Author of parent of this fork: Emmanuel Fleury (perror)
 Original Author: Vlad Niculae (vene, https://github.com/vene/pelican-bibtex/)
 
 *Note*: This code is unlicensed. It was not submitted to the `pelican-plugins`
