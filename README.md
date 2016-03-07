@@ -13,7 +13,7 @@ History
 =======
 
 - Aug 3, 2013 (Vlad Niculae): Initial release of the pelican plugin.
-- Jul 21, 2014 (Emmanuel Fleury): Added a few features and releasing version 0.3. 
+- Jul 21, 2014 (Emmanuel Fleury): Added a few features and releasing version 0.3.
 
 
 Requirements
@@ -52,6 +52,7 @@ available to people who want to cite your work.
 - `doi` is the DOI identification number.
 - `url` is the URL where to get the material or where to contact the publisher to get it.
 - `pdf`, `slides`, `poster` are special fields added to regular BibTeX fields to point to your publication work, for example:
+- `authorizer` as well
 ```
 @article{
    foo13
@@ -64,6 +65,9 @@ This plugin will take all defined fields and make them available in the template
 If a field is not defined, the tuple field will be `None`.  Furthermore, the
 fields are stripped from the generated BibTeX (found in the `bibtex` field).
 
+Changes from Original
+=====================
+I have modified the text for `inproceedings`, `misc`, and `unpublished` to be `Papers`, `Other Publications`, and `Posters and Extended Abstracts`, respectively.
 
 Template Example
 ================
