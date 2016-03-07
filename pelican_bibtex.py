@@ -121,7 +121,7 @@ def add_publications(generator):
                              'note'    : get_field(entry, 'note'),
                              'year'   : entry.fields.get('year'),
                              'authorizer': get_field(entry, 'authorizer'),
-                             'acceptance': get_field(entry, 'acceptance')
+                             'acceptance': get_field(entry, 'acceptance'),
                              'stats': get_field(entry, 'stats')
                              })
 
